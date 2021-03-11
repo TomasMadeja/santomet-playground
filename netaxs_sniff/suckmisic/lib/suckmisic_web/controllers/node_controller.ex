@@ -5,13 +5,14 @@ defmodule SuckmisicWeb.NodeController do
 
   def spawn(conn, %{"node" => node_id}) do
     case NodeService.spawn_node(node_id) do
-      :ok ->
+      {:ok, isics} ->
         conn
         |> put_status(200)
         |> json(
           %{
             "status" => "ok",
-            "node" => node_id
+            "node" => node_id,
+            "isics" => isics
           }
         )
       {:error, :exists} ->

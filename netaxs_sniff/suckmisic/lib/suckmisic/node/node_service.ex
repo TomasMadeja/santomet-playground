@@ -3,8 +3,8 @@ defmodule Suckmisic.Node.NodeService do
 
   def spawn_node(node) do
     case GenServer.call(NodeManager, {:spawn, node}) do
-      {:ok, _pid} ->
-        :ok
+      {:ok, isics} ->
+        {:ok, isics}
       {:error, :exists} ->
         {:error, :exists}
       {:error, :empty} ->

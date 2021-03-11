@@ -38,8 +38,8 @@ defmodule Suckmisic.Node.NodeManager do
     case Map.has_key?(nodes, node) do
       false ->
         case spawn_node(node) do
-          {:ok, pid} ->
-            {:reply, {:ok, pid}, Map.put_new(nodes, node, pid)}
+          {:ok, pid, isics} ->
+            {:reply, {:ok, isics}, Map.put_new(nodes, node, pid)}
           {:error, code} ->
             {:reply, {:error, code}, nodes}
         end
@@ -75,8 +75,8 @@ defmodule Suckmisic.Node.NodeManager do
       |> load_batch
       |> spawn_process
     case r do
-      {:ok, %{pid: pid}} ->
-        {:ok, pid}
+      {:ok, %{pid: pid, isics: isics}} ->
+        {:ok, pid, isics}
       {:error, :empty, _cfg} ->
         {:error, :empty}
       {:error, {:posix, _code}, _cfg} ->

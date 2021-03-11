@@ -36,7 +36,8 @@ ROUTE
     JSON:
     {
       "status": "ok",
-      "node": <node id>
+      "node": <node id>,
+      "isics": <string>[]
     }
     ---
     STATUS: 200
