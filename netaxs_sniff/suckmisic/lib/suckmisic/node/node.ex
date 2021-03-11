@@ -4,6 +4,9 @@ defmodule Suckmisic.Node.Node do
   alias Suckmisic.Model.Person
   alias Suckmisic.Repo
 
+  @backup_dir "backup"
+  @backup "backup/isics.txt"
+
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
@@ -34,7 +37,7 @@ defmodule Suckmisic.Node.Node do
     case MapSet.member?(isics, isic_id) do
       true ->
         isics = MapSet.delete(isics, isic_id)
-        {:reply, {:ok, isic_id}, {node_id, batch_id, isics}}
+        {:reply, :ok, {node_id, batch_id, isics}}
       false ->
         {:reply, {:error, :unknown}, {node_id, batch_id, isics}}
     end
@@ -82,7 +85,13 @@ defmodule Suckmisic.Node.Node do
       end
   end
 
-  defp record_erronous(_entry) do
-    :ok
+  defp record_erronous(entry) do
+    case File.open(@backup, [:append, :utf8]) do
+      {:ok, file} ->
+        IO.puts(file, entry)
+        :ok
+      {:error, posix} ->
+        :error
+    end
   end
 end

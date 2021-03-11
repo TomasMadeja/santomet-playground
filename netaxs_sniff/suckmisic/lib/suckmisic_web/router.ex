@@ -32,6 +32,8 @@ defmodule SuckmisicWeb.Router do
     post "/node/spawn", NodeController, :spawn
     post "/node/terminate", NodeController, :terminate
     post "/node/exists", NodeController, :exists
+    post "/node/isic/accept", NodeController, :accept
+    post "/node/isic/reject", NodeController, :reject
   end
 
   # Enables LiveDashboard only for development

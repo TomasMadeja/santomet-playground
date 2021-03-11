@@ -7,6 +7,9 @@ defmodule Suckmisic.Node.NodeManager do
   @archive_folder "storage/archive"
   @batch_folder "storage/batch"
 
+  @backup_dir "backup"
+  @backup "backup/isics.txt"
+
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
@@ -14,6 +17,8 @@ defmodule Suckmisic.Node.NodeManager do
   def init(_args) do
     File.mkdir_p!(@archive_folder)
     File.mkdir_p!(@batch_folder)
+    File.mkdir_p!(@backup_dir)
+    File.touch!(@backup)
     {:ok, %{}}
   end
 

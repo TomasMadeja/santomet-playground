@@ -114,6 +114,84 @@ Request
       "node": <node id>,
       "response": <boolean>
     }
+
+-------
+
+ROUTE
+/node/isic/accept
+Request
+    JSON:
+    {
+      "node" : <node id>,
+      "uco" : <string>,
+      "isic" : <string>,
+      "description" : <string>
+    }
+  Response
+    STATUS: 200
+    JSON:
+    {
+      "status": "ok",
+      "node": <node id>
+    }
+    ---
+    STATUS: 200
+    JSON:
+    {
+      "status": "lost",
+      "node": <node id>,
+      "error": "isic result was lost"
+    }
+    ---
+    STATUS: 200
+    JSON:
+    {
+      "status": "unknown_isic",
+      "node": <node id>,
+      "error": "unknown isic"
+    }
+    ---
+    STATUS: 200
+    JSON:
+    {
+      "status": "unknown_node",
+      "node": <node id>,
+      "error": "unknown node"
+    }
+
+-------
+
+ROUTE
+/node/isic/reject
+Request
+    JSON:
+    {
+      "node" : <node id>,
+      "isic" : <string>
+    }
+  Response
+    STATUS: 200
+    JSON:
+    {
+      "status": "ok",
+      "node": <node id>
+    }
+    ---
+    STATUS: 200
+    JSON:
+    {
+      "status": "unknown_isic",
+      "node": <node id>,
+      "error": "unknown isic"
+    }
+    ---
+    STATUS: 200
+    JSON:
+    {
+      "status": "unknown_node",
+      "node": <node id>,
+      "error": "unknown node"
+    }
 ```
 
 ## Learn more

@@ -94,4 +94,96 @@ defmodule SuckmisicWeb.NodeController do
       }
     )
   end
+
+  def accept(
+    conn,
+    %{
+      "node" => node_id,
+      "uco" => uco,
+      "isic" => isic,
+      "description" => description
+    }
+  ) do
+    case NodeService.accept_isic(node_id, {uco, isic, description}) do
+      :ok ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "status" => "ok",
+            "node" => node_id
+          }
+        )
+      {:error, :lost} ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "node" => node_id,
+            "status" => "lost",
+            "error" => "isic result was lost"
+          }
+        )
+      {:error, :unknown_isic} ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "node" => node_id,
+            "status" => "unknown_isic",
+            "error" => "unknown isic"
+          }
+        )
+      {:error, :unknown} ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "node" => node_id,
+            "status" => "unknown_node",
+            "error" => "unknown node"
+          }
+        )
+    end
+  end
+
+  def reject(
+    conn,
+    %{
+      "node" => node_id,
+      "isic" => isic
+    }
+  ) do
+    case NodeService.accept_isic(node_id, isic) do
+      :ok ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "status" => "ok",
+            "node" => node_id
+          }
+        )
+      {:error, :unknown_isic} ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "node" => node_id,
+            "status" => "unknown_isic",
+            "error" => "unknown isic"
+          }
+        )
+      {:error, :unknown} ->
+        conn
+        |> put_status(200)
+        |> json(
+          %{
+            "node" => node_id,
+            "status" => "unknown_node",
+            "error" => "unknown node"
+          }
+        )
+    end
+  end
 end
