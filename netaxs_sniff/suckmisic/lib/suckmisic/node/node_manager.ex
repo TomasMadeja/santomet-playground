@@ -6,6 +6,7 @@ defmodule Suckmisic.Node.NodeManager do
 
   @archive_folder "storage/archive"
   @batch_folder "storage/batch"
+  @finished_folder "storage/finished"
 
   @backup_dir "backup"
   @backup "backup/isics.txt"
@@ -17,6 +18,7 @@ defmodule Suckmisic.Node.NodeManager do
   def init(_args) do
     File.mkdir_p!(@archive_folder)
     File.mkdir_p!(@batch_folder)
+    File.mkdir_p!(@finished_folder)
     File.mkdir_p!(@backup_dir)
     File.touch!(@backup)
     {:ok, %{}}
@@ -168,6 +170,19 @@ defmodule Suckmisic.Node.NodeManager do
 
   defp spawn_process(r = {:error, _reason, _cfg}), do: r
 
+  defp return_batch({:ok, cfg = %{batch: batch, isics: isics}}) when length(isics) == 0 do
+    batch_path = Path.join(
+      @finished_folder,
+      Path.basename(batch)
+    )
+    case File.cp(batch, batch_path) do
+      :ok ->
+        {:ok, Map.put(cfg, :batch, batch_path)}
+      {:error, code} ->
+        {:error, {:posix, code}, cfg}
+    end
+  end
+
   defp return_batch({:ok, cfg = %{batch: batch}}) do
     batch_path = Path.join(
       @batch_folder,
@@ -184,11 +199,12 @@ defmodule Suckmisic.Node.NodeManager do
   defp return_batch(r = {:error, _reason, _cfg}), do: r
 
   defp terminate_node(pid) do
-    {node_id, batch_id, _isics} = GenServer.call(pid, :dump)
+    {node_id, batch_id, isics} = GenServer.call(pid, :dump)
     r = %{
       pid: pid,
       batch: Path.join(@archive_folder, batch_id),
-      node: node_id
+      node: node_id,
+      isics: isics
     }
      |> return_batch
      |> kill_node
