@@ -19,6 +19,7 @@ For server setup:
   * Configure database connection under `config/dev.exs` or `config/prod.exs`
   * Run `mix ecto.create` to create database
   * Run `mix ecto.migrate` to setup tables
+  * Store batches under `storage/batch`
 
 ## Rest API Calls
 
